@@ -26,6 +26,9 @@ def train(model, train_dataloader, valid_dataloader, opt):
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
 
     for epoch in range(opt.max_epoch):
+        
+        loss_meter.reset()
+        confusion_matrix.reset()
 
         # Train
         model.train()
