@@ -24,7 +24,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
         # Train
         model.train()
         
-        for _, (data, label) in enumerate(train_dataloader):
+        for ii, (data, label) in enumerate(train_dataloader):
             optimizer.zero_grad()
 
             if opt.use_gpu:
@@ -39,7 +39,9 @@ def train(model, train_dataloader, valid_dataloader, opt):
 
             loss_meter.add(loss.detach().item())
             confusion_matrix.add(prediction.detach(), label)
-            vis.plot("loss", loss_meter.value()[0])
+
+            if ii % opt.print_freq == opt.print_freq-1:
+                vis.plot("loss", loss_meter.value()[0])
 
         # Save model
         model.save()
@@ -48,13 +50,15 @@ def train(model, train_dataloader, valid_dataloader, opt):
         valid_confusion_matrix, valid_acc = valid(model, valid_dataloader)
 
         vis.plot("val_acc", valid_acc)
-        vis.log("epoch:{epoch}, lr:{lr}, loss:{loss:.3f}, train_cm:{train_cm}, valid_acc:{valid_acc:.2f}".format(
+        train_log = "epoch:{epoch}, lr:{lr}, loss:{loss:.3f}, train_cm:{train_cm}, valid_acc:{valid_acc:.2f}".format(
             epoch=epoch,
             lr=opt.lr,
             loss=loss_meter.value()[0],
             train_cm=str(confusion_matrix.value()),
             valid_acc=valid_acc
-        ))
+        )
+        vis.log(train_log)
+        print(train_log)
 
 
 def valid(model, data_loader):

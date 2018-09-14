@@ -33,5 +33,6 @@ class TrainOptions(BasicOptions):
         parser.add_argument("--env", type=str, default="default")
         parser.add_argument("--load_model_path", type=str, default="")
         parser.add_argument("--use_gpu", type=bool, default=False)
+        parser.add_argument("--print_freq", type=float, default=20)
 
         return parser
