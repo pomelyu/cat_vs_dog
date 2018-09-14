@@ -1,21 +1,11 @@
 import torch
 import numpy as np
+from torchnet import meter
 
 from models import ResNet34
 from dataset import dataloader
 from utils import Visiualizer
-from torchnet import meter
-
-class Option():
-    def __init__(self):
-        self.batch_size = 32
-        self.train_data_path = "data/train_mini"
-        self.test_data_path = "data/test_mini"
-        self.lr = 0.0001
-        self.max_epoch = 5
-        self.env = "default"
-        self.load_model_path = None
-        self.use_gpu = True
+from config import TrainOptions
 
 def train(model, train_dataloader, valid_dataloader, opt):
     vis = Visiualizer(opt.env)
@@ -86,7 +76,7 @@ def valid(model, data_loader):
 
 
 if __name__ == "__main__":
-    opt = Option()
+    opt = TrainOptions().parse()
 
     train_dataloader = dataloader.create_train_dataloader(opt.train_data_path, opt.batch_size)
     valid_dataloader = dataloader.create_valid_dataloader(opt.train_data_path, opt.batch_size)
