@@ -15,6 +15,7 @@ class Option():
         self.max_epoch = 5
         self.env = "default"
         self.load_model_path = None
+        self.use_gpu = True
 
 def train(model, train_dataloader, valid_dataloader, opt):
     vis = Visiualizer(opt.env)
@@ -35,6 +36,10 @@ def train(model, train_dataloader, valid_dataloader, opt):
         
         for _, (data, label) in enumerate(train_dataloader):
             optimizer.zero_grad()
+
+            if opt.use_gpu:
+                data = data.cuda()
+                label = label.cuda()
 
             prediction = model(data)
             loss = criterion(prediction, label)
@@ -66,6 +71,10 @@ def valid(model, data_loader):
     model.eval()
     confusion_matrix = meter.ConfusionMeter(2)
     for _, (data, label) in enumerate(data_loader):
+        if opt.use_gpu:
+            data = data.cuda()
+            label = label.cuda()
+
         prediction = model(data)
 
         confusion_matrix.add(prediction.detach().squeeze(), label.long())
@@ -85,5 +94,7 @@ if __name__ == "__main__":
     model = ResNet34()
     if opt.load_model_path:
         model.load(opt.load_model_path)
+    if opt.use_gpu:
+        model = model.cuda()
 
     train(model, train_dataloader, valid_dataloader, opt)
