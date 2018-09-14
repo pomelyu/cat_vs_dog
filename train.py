@@ -12,6 +12,8 @@ def train(model, train_dataloader, valid_dataloader, opt):
 
     loss_meter = meter.AverageValueMeter()
     confusion_matrix = meter.ConfusionMeter(2)
+    previous_loss = 10e5
+    lr = opt.lr
 
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
@@ -59,6 +61,13 @@ def train(model, train_dataloader, valid_dataloader, opt):
         )
         vis.log(train_log)
         print(train_log)
+
+        if loss_meter.value()[0] > previous_loss:
+            lr = lr * opt.lr_decay
+            for param_group in optimizer.param_groups:
+                param_group["lr"] = lr
+
+        previous_loss = loss_meter.value()[0]
 
 
 def valid(model, data_loader):
