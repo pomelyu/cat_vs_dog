@@ -5,9 +5,19 @@ from torchnet import meter
 from models import ResNet34
 from dataset import dataloader
 from utils import Visiualizer
-from config import TrainOptions
+from config import opt
 
-def train(model, train_dataloader, valid_dataloader, opt):
+def train(**kwargs):
+    opt._parse(kwargs)
+
+    train_dataloader = dataloader.create_train_dataloader(opt.train_data_path, opt.batch_size)
+    valid_dataloader = dataloader.create_valid_dataloader(opt.train_data_path, opt.batch_size)
+
+    model = ResNet34()
+    if opt.load_model_path:
+        model.load(opt.load_model_path)
+    if opt.use_gpu:
+        model = model.cuda()
     vis = Visiualizer(opt.env)
 
     loss_meter = meter.AverageValueMeter()
@@ -89,15 +99,5 @@ def valid(model, data_loader):
 
 
 if __name__ == "__main__":
-    opt = TrainOptions().parse()
-
-    train_dataloader = dataloader.create_train_dataloader(opt.train_data_path, opt.batch_size)
-    valid_dataloader = dataloader.create_valid_dataloader(opt.train_data_path, opt.batch_size)
-
-    model = ResNet34()
-    if opt.load_model_path:
-        model.load(opt.load_model_path)
-    if opt.use_gpu:
-        model = model.cuda()
-
-    train(model, train_dataloader, valid_dataloader, opt)
+    import fire
+    fire.Fire()
