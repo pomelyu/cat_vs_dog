@@ -46,7 +46,7 @@ class DogCatData(Dataset):
             label = None
         else:
             class_name = image_path.split("/")[-1].split(".")[0]
-            label = 1 if class_name == "dog" else 0
+            label = 1 if class_name.find("dog") != -1 else 0
 
         data = Image.open(image_path)
         data = self.transforms(data)

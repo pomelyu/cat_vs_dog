@@ -15,7 +15,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
     previous_loss = 10e5
     lr = opt.lr
 
-    criterion = torch.nn.CrossEntropyLoss()
+    criterion = torch.nn.BCELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
 
     for epoch in range(opt.max_epoch):
@@ -34,7 +34,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
                 label = label.cuda()
 
             prediction = model(data)
-            loss = criterion(prediction, label)
+            loss = criterion(prediction, label.float())
 
             loss.backward()
             optimizer.step()
