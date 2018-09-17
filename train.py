@@ -74,7 +74,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
 def valid(model, data_loader):
     model.eval()
     confusion_matrix = meter.ConfusionMeter(2)
-    for _, (data, label) in enumerate(data_loader):
+    for _, (data, label) in tqdm(enumerate(data_loader), total=len(data_loader), ascii=True):
         if opt.use_gpu:
             data = data.cuda()
             label = label.cuda()
