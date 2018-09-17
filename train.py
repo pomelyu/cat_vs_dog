@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+from tqdm import tqdm
 from torchnet import meter
 
 from models import ResNet34
@@ -26,7 +27,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
         # Train
         model.train()
         
-        for ii, (data, label) in enumerate(train_dataloader):
+        for ii, (data, label) in tqdm(enumerate(train_dataloader), total=len(train_dataloader), ascii=True):
             optimizer.zero_grad()
 
             if opt.use_gpu:
