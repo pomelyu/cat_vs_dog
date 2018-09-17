@@ -37,3 +37,14 @@ class TrainOptions(BasicOptions):
         parser.add_argument("--print_freq", type=float, default=20)
 
         return parser
+
+class TestOptions(BasicOptions):
+    def initialize(self, parser):
+        parser = BasicOptions.initialize(self, parser)
+        parser.add_argument("--test_data_path", required=True)
+        parser.add_argument("--load_model_path", required=True)
+        parser.add_argument("--output_path", type=str, default="out/prediction.csv")
+        parser.add_argument("--batch_size", type=int, default=32)
+        parser.add_argument("--use_gpu", type=bool, default=False)
+
+        return parser

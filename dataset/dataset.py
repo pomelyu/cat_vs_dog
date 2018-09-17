@@ -43,7 +43,7 @@ class DogCatData(Dataset):
         image_path = self.data[index]
 
         if self.usage == "test":
-            label = None
+            label = int(image_path.split("/")[-1].split(".")[0])
         else:
             class_name = image_path.split("/")[-1].split(".")[0]
             label = 1 if class_name.find("dog") != -1 else 0
