@@ -8,6 +8,8 @@ class ResNet34(BasicModule):
         super(ResNet34, self).__init__()
         self.model_name = "resnet34"
         self.model = resnet34(pretrained=True)
+        for param in self.model.parameters():
+            param.requires_grad = False
         self.model.fc = torch.nn.Linear(512, 1, bias=True)
         
     def forward(self, x):
