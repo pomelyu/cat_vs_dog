@@ -1,3 +1,4 @@
+import os
 import torch
 import numpy as np
 from tqdm import tqdm
@@ -46,6 +47,10 @@ def train(model, train_dataloader, valid_dataloader, opt):
             if ii % opt.print_freq == opt.print_freq-1:
                 vis.plot("loss", loss_meter.value()[0])
 
+            if os.path.exists(opt.debug_file):
+                import ipdb
+                ipdb.set_trace()
+
         # Save model
         model.save()
 
@@ -56,6 +61,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
         train_log = "epoch:{epoch}, lr:{lr}, loss:{loss:.3f}, train_cm:{train_cm}, valid_acc:{valid_acc:.2f}".format(
             epoch=epoch,
             lr=opt.lr,
+            lr=lr,
             loss=loss_meter.value()[0],
             train_cm=str(confusion_matrix.value()),
             valid_acc=valid_acc
