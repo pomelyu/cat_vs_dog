@@ -30,6 +30,7 @@ class TrainOptions(BasicOptions):
         parser.add_argument("--batch_size", type=int, default=32)
         parser.add_argument("--lr", type=float, default=0.0001)
         parser.add_argument("--lr_decay", type=float, default=0.9)
+        parser.add_argument("--beta1", type=float, default=0.9)
         parser.add_argument("--max_epoch", type=int, default=5)
         parser.add_argument("--env", type=str, default="default")
         parser.add_argument("--load_model_path", type=str, default="")

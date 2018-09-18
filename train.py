@@ -19,7 +19,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
     lr = opt.lr
 
     criterion = torch.nn.BCELoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
 
     for epoch in range(opt.max_epoch):
         
