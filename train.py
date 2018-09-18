@@ -42,7 +42,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
             optimizer.step()
 
             loss_meter.add(loss.detach().item())
-            confusion_matrix.add(prediction.detach(), label)
+            confusion_matrix.add(prediction.detach() >= 0.5, label)
 
             if ii % opt.print_freq == opt.print_freq-1:
                 vis.plot("loss", loss_meter.value()[0])
@@ -87,7 +87,7 @@ def valid(model, data_loader):
 
         prediction = model(data)
 
-        confusion_matrix.add(prediction.detach().squeeze(), label.long())
+        confusion_matrix.add(prediction.detach().squeeze() >= 0.5, label.long())
 
     cm_value = confusion_matrix.value()
     accuracy = 100. * (cm_value[0][0] + cm_value[1][1]) / cm_value.sum()
