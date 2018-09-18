@@ -42,4 +42,4 @@ if __name__ == "__main__":
     with open(opt.output_path, "w+") as fout:
         fout.write("id,label\n")
         for image_id, label in res:
-            fout.write("{:},{:d}\n".format(image_id, label))
+            fout.write("{:.0f},{:.0f}\n".format(image_id, label))
