@@ -13,6 +13,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
     vis = Visiualizer(opt.env)
 
     loss_meter = meter.AverageValueMeter()
+    acc_meter = meter.AverageValueMeter()
     confusion_matrix = meter.ConfusionMeter(2)
     previous_loss = 10e5
     lr = opt.lr
@@ -23,6 +24,7 @@ def train(model, train_dataloader, valid_dataloader, opt):
     for epoch in range(opt.max_epoch):
         
         loss_meter.reset()
+        acc_meter.reset()
         confusion_matrix.reset()
 
         # Train
@@ -43,6 +45,9 @@ def train(model, train_dataloader, valid_dataloader, opt):
 
             loss_meter.add(loss.detach().item())
             confusion_matrix.add(prediction.detach() >= 0.5, label)
+            cm_value = confusion_matrix.value()
+            accuracy = 100. * (cm_value[0][0] + cm_value[1][1]) / cm_value.sum()
+            acc_meter.add(accuracy)
 
             if ii % opt.print_freq == opt.print_freq-1:
                 vis.plot("loss", loss_meter.value()[0])
@@ -58,12 +63,12 @@ def train(model, train_dataloader, valid_dataloader, opt):
         valid_confusion_matrix, valid_acc = valid(model, valid_dataloader)
 
         vis.plot("val_acc", valid_acc)
-        train_log = "epoch:{epoch}, lr:{lr}, loss:{loss:.3f}, train_cm:{train_cm}, valid_acc:{valid_acc:.2f}".format(
+        train_log = "epoch:{epoch}, lr:{lr}, loss:{loss:.3f}, train_cm:{train_cm}, train_acc:{train_acc:.2f}, valid_acc:{valid_acc:.2f}".format(
             epoch=epoch,
-            lr=opt.lr,
             lr=lr,
             loss=loss_meter.value()[0],
             train_cm=str(confusion_matrix.value()),
+            train_acc=acc_meter.value()[0],
             valid_acc=valid_acc
         )
         vis.log(train_log)
